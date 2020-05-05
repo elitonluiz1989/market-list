@@ -16,10 +16,7 @@ export default StyleSheet.create<IHomeStyles>({
     backgroundColor: '#339900'
   },
   products: {
-    flexGrow: 0,
-    borderColor: '#f00',
-    borderStyle: 'solid',
-    borderWidth: 1
+    flexGrow: 0
   },
   product: {
     flexDirection: 'row',

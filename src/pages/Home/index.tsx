@@ -12,21 +12,26 @@ export default function App() {
   const [qtd, setQtd] = useState<number>(0);
   const [value, setValue] = useState<number>(0);
 
-  const getNumericValues: Function = (value: number): string => {
-    return value > 0 ? value.toString() : '';
+  const getNumericValues: Function = (value: number, defaultValue: string = ''): string => {
+    return value > 0 ? value.toString() : defaultValue;
   }
 
-  const addProduct: Function = () => {
-    console.log(name, qtd, value)
-    if (name.trim() !== '' && qtd > 0 && value > 0) {
+  const addProduct: Function = (): void => {
+    if (name.trim() !== '' && value > 0) {
+      const product: IProduct =
+      {
+        id: products.length,
+        name: name,
+        quantity: qtd,
+        value: value
+      }
+
+      if (product.quantity === 0) {
+        product.quantity = 1;
+      }
 
       const productList: IProduct[] = [
-        {
-          id: products.length,
-          name: name,
-          quantity: qtd,
-          value: value
-        },
+        product,
         ...products
       ];
 
@@ -36,6 +41,14 @@ export default function App() {
       setQtd(0)
       setValue(0);
     }
+  }
+
+  const removeProduct: Function = (id: number): void => {
+    const productList: IProduct[] = products.filter((item: IProduct, index: number) => {
+      return item.id != id;
+    });
+
+    setProducts(productList);
   }
 
   return (
@@ -57,17 +70,11 @@ export default function App() {
               ]}>{product.name}</Text>
               <Text style={[
                 styles.productField
-              ]}>{product.quantity}</Text>
-              <Text style={[
-                styles.productField
-              ]}>{product.value}</Text>
-              <Text style={[
-                styles.productField
               ]}>{product.quantity * product.value}</Text>
 
               <TouchableOpacity
                 style={styles.productBtn}
-                onPress={() => '#'}>
+                onPress={() => removeProduct(product.id)}>
                 <FontAwesome5 name="minus" size={28} color="white" />
               </TouchableOpacity>
             </View>
@@ -95,7 +102,7 @@ export default function App() {
             ]}
             keyboardType="number-pad"
             maxLength={3}
-            placeholder="qtd."
+            placeholder="1"
             value={getNumericValues(qtd)}
             onChangeText={qtd => setQtd(Number(qtd))} />
 
@@ -107,7 +114,7 @@ export default function App() {
             ]}
             keyboardType="number-pad"
             maxLength={3}
-            placeholder={t('product.value')}
+            placeholder="0.00"
             value={getNumericValues(value)}
             onChangeText={value => setValue(Number(value))} />
 
