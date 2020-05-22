@@ -7,6 +7,7 @@ export default interface IHomeStyles {
   main: ViewStyle,
   section: ViewStyle,
   textCenter: TextStyle,
+  textRight: TextStyle,
   products: ViewStyle,
   product: ViewStyle,
   productField: TextStyle,

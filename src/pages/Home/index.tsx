@@ -10,20 +10,22 @@ export default function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
-  const [value, setValue] = useState<number>(0);
+  const [price, setPrice] = useState<string>('');
 
   const getNumericValues: Function = (value: number, defaultValue: string = ''): string => {
     return value > 0 ? value.toString() : defaultValue;
   }
 
   const addProduct: Function = (): void => {
+    let value = Number(price);
     if (value > 0) {
       const product: IProduct =
       {
         id: products.length + 1,
         name: name,
         quantity: qtd,
-        value: value
+        value: value,
+        total: 0
       }
 
       if (product.name.trim() === '') {
@@ -34,6 +36,8 @@ export default function App() {
         product.quantity = 1;
       }
 
+      product.total = product.value * product.quantity;
+
       const productList: IProduct[] = [
         product,
         ...products
@@ -43,7 +47,7 @@ export default function App() {
 
       setName('');
       setQtd(0)
-      setValue(0);
+      setPrice('');
     }
   }
 
@@ -53,6 +57,34 @@ export default function App() {
     });
 
     setProducts(productList);
+  }
+
+  const handleCurrency: Function = (amount: string): void => {
+    let sanitizedAmount = amount.replace(/\.|,/g, '');
+    console.log(sanitizedAmount, amount.replace(/\.|,/g, ''))
+
+    if (Number(sanitizedAmount) > 0) {
+      let newAmount = sanitizedAmount;
+      let length = sanitizedAmount.length;
+
+      if (length === 1) {
+        newAmount = '0.0' + sanitizedAmount;
+      } else if (length === 2) {
+        newAmount = '0.' + sanitizedAmount
+      } else if (length >= 3) {
+        let breakPos: number = sanitizedAmount.length - 2;
+        newAmount = sanitizedAmount.substr(0, breakPos) + '.' +
+          sanitizedAmount.substr(breakPos, length);
+      }
+      console.log(newAmount);
+      setPrice(Number(newAmount).toFixed(2).toString());
+    } else {
+      setPrice('')
+    }
+  }
+
+  const formatCurrency: Function = (amount: number): string | void => {
+    return amount.toString();
   }
 
   return (
@@ -80,12 +112,6 @@ export default function App() {
                   styles.productField,
                   styles.productFieldAutoSize,
                   styles.textCenter
-                ]}>{product.id}</Text>
-
-                <Text style={[
-                  styles.productField,
-                  styles.productFieldAutoSize,
-                  styles.textCenter
                 ]}>{product.name}</Text>
 
                 <Text style={[
@@ -93,7 +119,7 @@ export default function App() {
                   styles.productFieldAutoSize,
                   styles.productFieldSeparator,
                   styles.textCenter
-                ]}>{product.quantity * product.value}</Text>
+                ]}>{formatCurrency(product.total)}</Text>
               </View>
 
               <TouchableOpacity
@@ -121,7 +147,7 @@ export default function App() {
               placeholder={t('product.product')}
               textContentType="name"
               value={name}
-              onChangeText={name => setName(name)} />
+              onChangeText={value => setName(value)} />
 
             <TextInput
               style={[
@@ -134,20 +160,20 @@ export default function App() {
               maxLength={3}
               placeholder="1"
               value={getNumericValues(qtd)}
-              onChangeText={qtd => setQtd(Number(qtd))} />
+              onChangeText={value => setQtd(Number(value))} />
 
             <TextInput
               style={[
                 styles.productValue,
                 styles.productInput,
                 styles.productField,
-                styles.productFieldBordered
+                styles.productFieldBordered,
+                styles.textRight
               ]}
               keyboardType="number-pad"
-              maxLength={3}
               placeholder="0.00"
-              value={getNumericValues(value)}
-              onChangeText={value => setValue(Number(value))} />
+              value={price}
+              onChangeText={value => handleCurrency(value)} />
 
             <TouchableOpacity
               style={[

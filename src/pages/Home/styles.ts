@@ -29,6 +29,9 @@ export default StyleSheet.create<IHomeStyles>({
   textCenter: {
     textAlign: 'center',
   },
+  textRight: {
+    textAlign: 'right',
+  },
   products: {
     flexGrow: 0,
     marginBottom: 10,
