@@ -9,11 +9,22 @@ export default StyleSheet.create<ICommonStyles>({
   page: {
     paddingTop: Constants.statusBarHeight,
     paddingHorizontal: 12,
-    backgroundColor: '#339966'
+    backgroundColor: '#2b754b'
   },
   header: {
-    height: 30,
-    backgroundColor: '#339900'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 0
+  },
+  headerLogo: {
+    width: 60,
+    height: 60
+  },
+  headerTitle: {
+    paddingLeft: 20,
+    fontSize: 38,
+    color: 'white'
   },
   main: {
     backgroundColor: 'white',

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, TextInput, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 
 import IProduct from './interfaces/Product';
 import commonStyles from '../../common/styles/common';
 import styles from './styles';
+import LogoImg from '../../../assets/icon.png';
 
 export default function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -101,7 +102,9 @@ export default function App() {
   return (
     <View style={[commonStyles.page, commonStyles.container]}>
       <View style={commonStyles.header}>
-        <Text>{t('app.title')}</Text>
+        <Image style={commonStyles.headerLogo}
+          source={LogoImg} />
+        <Text style={commonStyles.headerTitle}>{t('app.title')}</Text>
       </View>
 
       <View style={[

@@ -1,10 +1,7 @@
 import { StyleSheet } from 'react-native';
 import IHomeStyles from './interfaces/HomeStyles';
 import commonStyles from '../../common/styles/common';
-
-const gray: string = '#ddd';
-const grayDark: string = '#aaa';
-const violetDark: string = '#210063';
+import colors from '../../common/styles/colors';
 
 export default StyleSheet.create<IHomeStyles>({
   totalBar: {
@@ -14,7 +11,7 @@ export default StyleSheet.create<IHomeStyles>({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: violetDark,
+    borderBottomColor: colors.violet.dark
   },
   totalBarLabel: {
     paddingRight: 15,
@@ -25,7 +22,7 @@ export default StyleSheet.create<IHomeStyles>({
     minWidth: 100,
     paddingVertical: 0,
     paddingHorizontal: 5,
-    backgroundColor: violetDark,
+    backgroundColor: colors.violet.dark,
     borderRadius: 5,
     color: 'white',
     ...commonStyles.textRight,
@@ -36,7 +33,7 @@ export default StyleSheet.create<IHomeStyles>({
   products: {
     flex: 1,
     paddingBottom: 7,
-    backgroundColor: violetDark
+    backgroundColor: colors.violet.dark
   },
   product: {
     ...commonStyles.flexRow,
@@ -45,9 +42,6 @@ export default StyleSheet.create<IHomeStyles>({
     paddingVertical: 8,
     paddingHorizontal: 4,
     backgroundColor: 'white',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: gray,
     borderRadius: 5
   },
   productField: {
@@ -59,7 +53,7 @@ export default StyleSheet.create<IHomeStyles>({
   productFieldBordered: {
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#aaa'
+    borderColor: colors.gray.dark
   },
   prodcutFieldGroup: {
     flexGrow: 1,
@@ -68,7 +62,8 @@ export default StyleSheet.create<IHomeStyles>({
   productFieldSeparator: {
     borderLeftWidth: 1,
     borderStyle: 'solid',
-    borderLeftColor: grayDark
+    borderLeftColor: colors.gray.dark,
+    borderRadius: 0
   },
   productInput: {
     backgroundColor: 'white',
@@ -90,6 +85,6 @@ export default StyleSheet.create<IHomeStyles>({
     ...commonStyles.flexRow,
     borderTopWidth: 1,
     borderStyle: 'solid',
-    borderTopColor: violetDark,
+    borderTopColor: colors.violet.dark,
   }
 });

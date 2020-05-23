@@ -1,9 +1,11 @@
-import { ViewStyle, TextStyle } from 'react-native';
+import { ViewStyle, TextStyle, ImageStyle } from 'react-native';
 
 export default interface IHomeStyles {
   container: ViewStyle,
   page: ViewStyle,
   header: ViewStyle,
+  headerLogo: ImageStyle,
+  headerTitle: TextStyle,
   main: ViewStyle,
   section: ViewStyle,
   flexRow: ViewStyle,
