@@ -1,52 +1,50 @@
-import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import Constants from 'expo-constants';
+import { StyleSheet } from 'react-native';
 import IHomeStyles from './interfaces/HomeStyles';
+import commonStyles from '../../common/styles/common';
 
 const gray: string = '#ddd';
 const grayDark: string = '#aaa';
+const violetDark: string = '#210063';
 
 export default StyleSheet.create<IHomeStyles>({
-  container: {
-    flex: 1
-  },
-  page: {
-    paddingTop: Constants.statusBarHeight,
-    paddingHorizontal: 12,
-    backgroundColor: '#339966'
-  },
-  header: {
-    height: 30,
-    backgroundColor: '#339900'
-  },
-  main: {
-    backgroundColor: 'white',
-    marginBottom: 20,
-    borderRadius: 10
-  },
-  section: {
-    padding: 10
-  },
-  textCenter: {
-    textAlign: 'center',
-  },
-  textRight: {
-    textAlign: 'right',
-  },
-  products: {
-    flexGrow: 0,
-    marginBottom: 10,
-    borderTopWidth: 1,
+  totalBar: {
+    ...commonStyles.flexRow,
+    ...commonStyles.flexSpaceAround,
+    paddingTop: 10,
+    paddingBottom: 10,
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#888'
+    borderBottomColor: violetDark,
+  },
+  totalBarLabel: {
+    paddingRight: 15,
+    ...commonStyles.flexFill,
+    ...commonStyles.textRight
+  },
+  totalBarValue: {
+    minWidth: 100,
+    paddingVertical: 0,
+    paddingHorizontal: 5,
+    backgroundColor: violetDark,
+    borderRadius: 5,
+    color: 'white',
+    ...commonStyles.textRight,
+  },
+  totalBarText: {
+    fontSize: 30
+  },
+  products: {
+    flex: 1,
+    paddingBottom: 7,
+    backgroundColor: violetDark
   },
   product: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    ...commonStyles.flexRow,
+    ...commonStyles.flexSpaceAround,
     marginBottom: 10,
     paddingVertical: 8,
     paddingHorizontal: 4,
-    backgroundColor: '#fefefe',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: gray,
@@ -55,10 +53,8 @@ export default StyleSheet.create<IHomeStyles>({
   productField: {
     marginRight: 4,
     padding: 3,
+    borderRadius: 5,
     fontSize: 28
-  },
-  productFieldAutoSize: {
-    flexGrow: 1
   },
   productFieldBordered: {
     borderWidth: 1,
@@ -89,5 +85,11 @@ export default StyleSheet.create<IHomeStyles>({
     width: 50,
     backgroundColor: 'white',
     borderRadius: 10
+  },
+  productBtnBar: {
+    ...commonStyles.flexRow,
+    borderTopWidth: 1,
+    borderStyle: 'solid',
+    borderTopColor: violetDark,
   }
 });
