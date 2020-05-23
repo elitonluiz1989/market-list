@@ -29,7 +29,7 @@ export default function App() {
     if (value > 0) {
       const product: IProduct =
       {
-        id: products.length + 1,
+        id: getNextProductId(),
         name: name,
         quantity: qtd,
         value: value,
@@ -54,7 +54,7 @@ export default function App() {
       setProducts(productList);
 
       setName('');
-      setQtd(0)
+      setQtd(0);
       setPrice('');
     }
   }
@@ -74,7 +74,6 @@ export default function App() {
 
   const handleCurrency: Function = (amount: string): void => {
     let sanitizedAmount = amount.replace(/\.|,/g, '');
-    console.log(sanitizedAmount, amount.replace(/\.|,/g, ''))
 
     if (Number(sanitizedAmount) > 0) {
       let newAmount = sanitizedAmount;
@@ -91,12 +90,24 @@ export default function App() {
       }
       setPrice(Number(newAmount).toFixed(2));
     } else {
-      setPrice('')
+      setPrice('');
     }
   }
 
   const formatCurrency: Function = (amount: number): string | void => {
     return amount.toFixed(2);
+  }
+
+  const getNextProductId: Function = (): number => {
+    if (products.length === 0) {
+      return 1;
+    }
+
+    let lastId = products.reduce((lastId: number, product: IProduct): number => {
+      return product.id > lastId ? product.id : lastId;
+    }, 1);
+
+    return lastId + 1;
   }
 
   return (

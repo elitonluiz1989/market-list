@@ -193,32 +193,42 @@
        d="m 119.08858,120.87217 -46.987289,84.99747 72.911339,16.18994 4.59256,-8.94059 -63.605163,-14.19855 4.628996,-8.38317 63.526457,13.72337 5.37486,-10.46354 -63.54773,-12.95525 0.438482,-0.79401 4.212348,-7.62871 63.85618,11.7234 5.25524,-10.23068 -63.39894,-11.83809 5.07348,-9.18814 63.3878,11.17093 5.68599,-11.0693 -62.93334,-11.22205 5.19429,-9.40694 63.12767,10.1386 L 192,130.58619 Z"
        id="path817"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccccccccccccccc" />
+       sodipodi:nodetypes="cccccccccccccccccccccc"
+       inkscape:export-xdpi="23"
+       inkscape:export-ydpi="23" />
     <path
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.28343415px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:1"
        d="m 88.01698,195.26771 8.541907,-15.46944 -54.401574,0.0143 L 28.08607,138.19967 0,133.25002 v 14.86274 l 17.568055,2.8275 39.97975,118.88184 H 150.5597 l 33.94832,-90.02383 h -17.78686 l -8.13232,15.46944 6.895,0 -22.49934,59.66355 H 67.558453 L 47.383432,195.26771 Z"
        id="path815"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccccccc" />
+       sodipodi:nodetypes="ccccccccccccccccc"
+       inkscape:export-xdpi="23"
+       inkscape:export-ydpi="23" />
     <path
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.28343415px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:1"
        d="m 192,130.58619 -46.98737,91.47339 -13.37488,-2.96989 48.46241,-90.08893 z"
        id="path4543"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-xdpi="23"
+       inkscape:export-ydpi="23" />
     <ellipse
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.28343415;stroke-opacity:1"
        id="path4595"
        cx="71.463776"
        cy="286.00873"
        rx="11.503469"
-       ry="10.793331" />
+       ry="10.793331"
+       inkscape:export-xdpi="23"
+       inkscape:export-ydpi="23" />
     <ellipse
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.28343415;stroke-opacity:1"
        id="path4595-0"
        cx="130.71483"
        cy="286.07883"
        rx="11.503469"
-       ry="10.793331" />
+       ry="10.793331"
+       inkscape:export-xdpi="23"
+       inkscape:export-ydpi="23" />
   </g>
 </svg>
