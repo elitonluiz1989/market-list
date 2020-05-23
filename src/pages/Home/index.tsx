@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 
 import IProduct from './interfaces/Product';
+import commonStyles from '../../common/styles/common';
 import styles from './styles';
 
 export default function App() {
@@ -11,10 +12,16 @@ export default function App() {
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
+  const [total, setTotal] = useState<number>(0);
 
-  const getNumericValues: Function = (value: number, defaultValue: string = ''): string => {
-    return value > 0 ? value.toString() : defaultValue;
-  }
+  // Product's actions
+  useEffect(() => {
+    let total = products.reduce((amount: number, product: IProduct) => {
+      return amount + product.total;
+    }, 0);
+
+    setTotal(total);
+  }, [products]);
 
   const addProduct: Function = (): void => {
     let value = Number(price);
@@ -59,6 +66,11 @@ export default function App() {
     setProducts(productList);
   }
 
+  // Helpers
+  const setNumberToTextInput: Function = (value: number, defaultValue: string = ''): string => {
+    return value > 0 ? value.toString() : defaultValue;
+  }
+
   const handleCurrency: Function = (amount: string): void => {
     let sanitizedAmount = amount.replace(/\.|,/g, '');
     console.log(sanitizedAmount, amount.replace(/\.|,/g, ''))
@@ -76,114 +88,130 @@ export default function App() {
         newAmount = sanitizedAmount.substr(0, breakPos) + '.' +
           sanitizedAmount.substr(breakPos, length);
       }
-      console.log(newAmount);
-      setPrice(Number(newAmount).toFixed(2).toString());
+      setPrice(Number(newAmount).toFixed(2));
     } else {
       setPrice('')
     }
   }
 
   const formatCurrency: Function = (amount: number): string | void => {
-    return amount.toString();
+    return amount.toFixed(2);
   }
 
   return (
-    <View style={[styles.page, styles.container]}>
-      <View style={styles.header}>
+    <View style={[commonStyles.page, commonStyles.container]}>
+      <View style={commonStyles.header}>
         <Text>{t('app.title')}</Text>
       </View>
 
       <View style={[
-        styles.container,
-        styles.main
+        commonStyles.container,
+        commonStyles.main
       ]}>
-        <FlatList
-          style={[
-            styles.products,
-            styles.section
-          ]}
-          data={products}
-          keyExtractor={product => product.id.toString()}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item: product }) => (
-            <View style={styles.product}>
-              <View style={styles.prodcutFieldGroup}>
-                <Text style={[
-                  styles.productField,
-                  styles.productFieldAutoSize,
-                  styles.textCenter
-                ]}>{product.name}</Text>
+        <View style={[
+          styles.totalBar,
+          commonStyles.section
+        ]}>
+          <Text style={[
+            styles.totalBarLabel,
+            styles.totalBarText
+          ]}>{t('total')}</Text>
 
-                <Text style={[
-                  styles.productField,
-                  styles.productFieldAutoSize,
-                  styles.productFieldSeparator,
-                  styles.textCenter
-                ]}>{formatCurrency(product.total)}</Text>
+          <Text style={[
+            styles.totalBarValue,
+            styles.totalBarText
+          ]}>{formatCurrency(total)}</Text>
+        </View>
+        <View style={[
+          styles.products,
+          commonStyles.section
+        ]}>
+          <FlatList
+            data={products}
+            keyExtractor={product => product.id.toString()}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item: product }) => (
+              <View style={styles.product}>
+                <View style={styles.prodcutFieldGroup}>
+                  <Text style={[
+                    styles.productField,
+                    commonStyles.flexFill,
+                    commonStyles.textCenter
+                  ]}>{product.name}</Text>
+
+                  <Text style={[
+                    styles.productField,
+                    styles.productFieldSeparator,
+                    commonStyles.flexFill,
+                    commonStyles.textCenter
+                  ]}>{formatCurrency(product.total)}</Text>
+                </View>
+
+                <TouchableOpacity
+                  style={[
+                    styles.productBtn,
+                    styles.productFieldBordered
+                  ]}
+                  onPress={() => removeProduct(product.id)}>
+                  <FontAwesome5 name="minus" size={28} color="#444" />
+                </TouchableOpacity>
               </View>
+            )}
+          />
+        </View>
 
-              <TouchableOpacity
-                style={[
-                  styles.productBtn,
-                  styles.productFieldBordered
-                ]}
-                onPress={() => removeProduct(product.id)}>
-                <FontAwesome5 name="minus" size={28} color="#444" />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
+        <View style={[
+          styles.productBtnBar,
+          commonStyles.section
+        ]}>
+          <TextInput
+            style={[
+              styles.productInput,
+              styles.productField,
+              commonStyles.flexFill,
+              styles.productFieldBordered
+            ]}
+            maxLength={60}
+            placeholder={t('product.product')}
+            textContentType="name"
+            value={name}
+            onChangeText={value => setName(value)} />
 
-        <View style={styles.section}>
-          <View style={styles.product}>
-            <TextInput
-              style={[
-                styles.productInput,
-                styles.productField,
-                styles.productFieldAutoSize,
-                styles.productFieldBordered
-              ]}
-              maxLength={60}
-              placeholder={t('product.product')}
-              textContentType="name"
-              value={name}
-              onChangeText={value => setName(value)} />
+          <TextInput
+            style={[
+              styles.productQtd,
+              styles.productInput,
+              styles.productField,
+              styles.productFieldBordered
+            ]}
+            keyboardType="number-pad"
+            maxLength={3}
+            placeholder="1"
+            value={setNumberToTextInput(qtd)}
+            onChangeText={value => setQtd(Number(value))} />
 
-            <TextInput
-              style={[
-                styles.productQtd,
-                styles.productInput,
-                styles.productField,
-                styles.productFieldBordered
-              ]}
-              keyboardType="number-pad"
-              maxLength={3}
-              placeholder="1"
-              value={getNumericValues(qtd)}
-              onChangeText={value => setQtd(Number(value))} />
+          <TextInput
+            style={[
+              styles.productValue,
+              styles.productInput,
+              styles.productField,
+              styles.productFieldBordered,
+              commonStyles.textRight
+            ]}
+            keyboardType="number-pad"
+            placeholder="0.00"
+            value={price}
+            onChangeText={value => handleCurrency(value)} />
 
-            <TextInput
-              style={[
-                styles.productValue,
-                styles.productInput,
-                styles.productField,
-                styles.productFieldBordered,
-                styles.textRight
-              ]}
-              keyboardType="number-pad"
-              placeholder="0.00"
-              value={price}
-              onChangeText={value => handleCurrency(value)} />
+          <TouchableOpacity
+            style={[
+              styles.productBtn,
+              styles.productFieldBordered
+            ]}
+            onPress={() => addProduct()}>
+            <FontAwesome5 name="plus" size={28} color="#444" />
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[
-                styles.productBtn,
-                styles.productFieldBordered
-              ]}
-              onPress={() => addProduct()}>
-              <FontAwesome5 name="plus" size={28} color="#444" />
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     </View>
