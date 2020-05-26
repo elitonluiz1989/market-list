@@ -6,7 +6,8 @@ import { t } from 'i18n-js';
 import IProduct from './interfaces/Product';
 import commonStyles from '../../common/styles/common';
 import styles from './styles';
-import LogoImg from '../../../assets/icon.png';
+
+import HeaderApp from '../../components/HeaderApp';
 
 export default function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -112,11 +113,7 @@ export default function App() {
 
   return (
     <View style={[commonStyles.page, commonStyles.container]}>
-      <View style={commonStyles.header}>
-        <Image style={commonStyles.headerLogo}
-          source={LogoImg} />
-        <Text style={commonStyles.headerTitle}>{t('app.title')}</Text>
-      </View>
+      <HeaderApp />
 
       <View style={[
         commonStyles.container,

@@ -1,6 +1,6 @@
 import { ViewStyle, TextStyle } from 'react-native';
 
-export default interface IHomeStyles {
+export default interface IProductsStyles {
   totalBar: ViewStyle,
   totalBarLabel: ViewStyle,
   totalBarValue: ViewStyle,

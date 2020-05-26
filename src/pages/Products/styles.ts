@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
-import IHomeStyles from './interfaces/HomeStyles';
+import IProductsStyles from './interfaces/ProductsStyles';
 import commonStyles from '../../common/styles/common';
 import colors from '../../common/styles/colors';
 
-export default StyleSheet.create<IHomeStyles>({
+export default StyleSheet.create<IProductsStyles>({
   totalBar: {
     ...commonStyles.flexRow,
     ...commonStyles.flexSpaceAround,

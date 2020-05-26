@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 
 import './src/locale';
 
-import Home from './src/pages/Home';
+import Routes from './src/routes';
 
 export default function App() {
   return (
-    <Home />
+    <Routes />
   );
 }
