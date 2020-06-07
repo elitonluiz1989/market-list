@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
-import IProductsStyles from './interfaces/ProductsStyles';
-import commonStyles from '../../common/styles/common';
-import colors from '../../common/styles/colors';
+import IProductStyles from './styles';
+import commonStyles from 'App/common/styles/common';
+import colors from 'App/common/styles/colors';
 
-export default StyleSheet.create<IProductsStyles>({
+export default StyleSheet.create<IProductStyles>({
   totalBar: {
     ...commonStyles.flexRow,
     ...commonStyles.flexSpaceAround,
@@ -11,7 +11,7 @@ export default StyleSheet.create<IProductsStyles>({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: colors.violet.dark
+    borderBottomColor: colors.pallete.first
   },
   totalBarLabel: {
     paddingRight: 15,
@@ -22,7 +22,7 @@ export default StyleSheet.create<IProductsStyles>({
     minWidth: 100,
     paddingVertical: 0,
     paddingHorizontal: 5,
-    backgroundColor: colors.violet.dark,
+    backgroundColor: colors.pallete.third,
     borderRadius: 5,
     color: 'white',
     ...commonStyles.textRight,
@@ -33,7 +33,7 @@ export default StyleSheet.create<IProductsStyles>({
   products: {
     flex: 1,
     paddingBottom: 7,
-    backgroundColor: colors.violet.dark
+    backgroundColor: colors.pallete.second
   },
   product: {
     ...commonStyles.flexRow,
@@ -44,26 +44,14 @@ export default StyleSheet.create<IProductsStyles>({
     backgroundColor: 'white',
     borderRadius: 5
   },
-  productField: {
-    marginRight: 4,
-    padding: 3,
-    borderRadius: 5,
-    fontSize: 28
-  },
-  productFieldBordered: {
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.gray.dark
-  },
-  prodcutFieldGroup: {
-    flexGrow: 1,
-    flexDirection: 'row'
-  },
   productFieldSeparator: {
     borderLeftWidth: 1,
     borderStyle: 'solid',
-    borderLeftColor: colors.gray.dark,
+    borderLeftColor: colors.pallete.third,
     borderRadius: 0
+  },
+  productBordered: {
+    borderColor: colors.pallete.third
   },
   productInput: {
     backgroundColor: 'white',
@@ -85,6 +73,6 @@ export default StyleSheet.create<IProductsStyles>({
     ...commonStyles.flexRow,
     borderTopWidth: 1,
     borderStyle: 'solid',
-    borderTopColor: colors.violet.dark,
+    borderTopColor: colors.pallete.first,
   }
 });

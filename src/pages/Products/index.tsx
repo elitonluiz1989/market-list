@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, FlatList, TouchableOpacity, TextInput, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 
-import IProduct from './interfaces/Product';
-import commonStyles from '../../common/styles/common';
-import styles from './styles';
+import IProduct from 'App/common/interfaces/IProduct';
+import commonStyles from 'App/common/styles/common';
+import HeaderApp from 'App/components/HeaderApp';
 
-import HeaderApp from '../../components/HeaderApp';
+import productStyles from 'App/common/styles/product';
+import styles from './styles';
 
 export default function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -15,6 +18,10 @@ export default function App() {
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
   const [total, setTotal] = useState<number>(0);
+
+  const navidator = useNavigation();
+
+  const goToDetail: Function = (productId: number): void => navidator.navigate('Product', { productId });
 
   // Product's actions
   useEffect(() => {
@@ -142,16 +149,21 @@ export default function App() {
             keyExtractor={product => product.id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item: product }) => (
-              <View style={styles.product}>
-                <View style={styles.prodcutFieldGroup}>
+              <TouchableWithoutFeedback style={[
+                styles.product,
+                productStyles.productFieldBordered,
+                styles.productBordered
+              ]}
+                onLongPress={() => goToDetail(product.id)} >
+                <View style={productStyles.productFieldGroup}>
                   <Text style={[
-                    styles.productField,
+                    productStyles.productField,
                     commonStyles.flexFill,
                     commonStyles.textCenter
                   ]}>{product.name}</Text>
 
                   <Text style={[
-                    styles.productField,
+                    productStyles.productField,
                     styles.productFieldSeparator,
                     commonStyles.flexFill,
                     commonStyles.textCenter
@@ -161,12 +173,13 @@ export default function App() {
                 <TouchableOpacity
                   style={[
                     styles.productBtn,
-                    styles.productFieldBordered
+                    productStyles.productFieldBordered,
+                    styles.productBordered
                   ]}
                   onPress={() => removeProduct(product.id)}>
                   <FontAwesome5 name="minus" size={28} color="#444" />
                 </TouchableOpacity>
-              </View>
+              </TouchableWithoutFeedback>
             )}
           />
         </View>
@@ -178,9 +191,10 @@ export default function App() {
           <TextInput
             style={[
               styles.productInput,
-              styles.productField,
+              productStyles.productField,
               commonStyles.flexFill,
-              styles.productFieldBordered
+              productStyles.productFieldBordered,
+              productStyles.productFieldBorderedDefault
             ]}
             maxLength={60}
             placeholder={t('product.product')}
@@ -192,8 +206,9 @@ export default function App() {
             style={[
               styles.productQtd,
               styles.productInput,
-              styles.productField,
-              styles.productFieldBordered
+              productStyles.productField,
+              productStyles.productFieldBordered,
+              productStyles.productFieldBorderedDefault
             ]}
             keyboardType="number-pad"
             maxLength={3}
@@ -205,8 +220,9 @@ export default function App() {
             style={[
               styles.productValue,
               styles.productInput,
-              styles.productField,
-              styles.productFieldBordered,
+              productStyles.productField,
+              productStyles.productFieldBordered,
+              productStyles.productFieldBorderedDefault,
               commonStyles.textRight
             ]}
             keyboardType="number-pad"
@@ -217,7 +233,8 @@ export default function App() {
           <TouchableOpacity
             style={[
               styles.productBtn,
-              styles.productFieldBordered
+              productStyles.productFieldBordered,
+              productStyles.productFieldBorderedDefault
             ]}
             onPress={() => addProduct()}>
             <FontAwesome5 name="plus" size={28} color="#444" />

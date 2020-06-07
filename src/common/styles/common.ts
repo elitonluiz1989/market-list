@@ -1,6 +1,7 @@
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import Constants from 'expo-constants';
-import ICommonStyles from '../interfaces/ICommonStyles'
+import ICommonStyles from 'App/common/interfaces/ICommonStyles'
+import colors from './colors';
 
 export default StyleSheet.create<ICommonStyles>({
   container: {
@@ -9,7 +10,7 @@ export default StyleSheet.create<ICommonStyles>({
   page: {
     paddingTop: Constants.statusBarHeight,
     paddingHorizontal: 12,
-    backgroundColor: '#2b754b'
+    backgroundColor: colors.pallete.first
   },
   header: {
     flexDirection: 'row',
