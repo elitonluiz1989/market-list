@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
-import IProductStyles from './styles';
+import IProductsStyles from './styles.d';
 import commonStyles from 'App/common/styles/common';
 import colors from 'App/common/styles/colors';
 
-export default StyleSheet.create<IProductStyles>({
+export default StyleSheet.create<IProductsStyles>({
   totalBar: {
     ...commonStyles.flexRow,
     ...commonStyles.flexSpaceAround,
@@ -22,9 +22,8 @@ export default StyleSheet.create<IProductStyles>({
     minWidth: 100,
     paddingVertical: 0,
     paddingHorizontal: 5,
-    backgroundColor: colors.pallete.third,
+    borderColor: colors.pallete.first,
     borderRadius: 5,
-    color: 'white',
     ...commonStyles.textRight,
   },
   totalBarText: {
@@ -32,8 +31,7 @@ export default StyleSheet.create<IProductStyles>({
   },
   products: {
     flex: 1,
-    paddingBottom: 7,
-    backgroundColor: colors.pallete.second
+    paddingBottom: 7
   },
   product: {
     ...commonStyles.flexRow,
@@ -47,11 +45,11 @@ export default StyleSheet.create<IProductStyles>({
   productFieldSeparator: {
     borderLeftWidth: 1,
     borderStyle: 'solid',
-    borderLeftColor: colors.pallete.third,
+    borderLeftColor: colors.pallete.first,
     borderRadius: 0
   },
   productBordered: {
-    borderColor: colors.pallete.third
+    borderColor: colors.pallete.first
   },
   productInput: {
     backgroundColor: 'white',

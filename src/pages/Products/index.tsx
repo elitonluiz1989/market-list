@@ -137,7 +137,8 @@ export default function App() {
 
           <Text style={[
             styles.totalBarValue,
-            styles.totalBarText
+            styles.totalBarText,
+            commonStyles.textBordered,
           ]}>{formatCurrency(total)}</Text>
         </View>
         <View style={[
@@ -151,7 +152,7 @@ export default function App() {
             renderItem={({ item: product }) => (
               <TouchableWithoutFeedback style={[
                 styles.product,
-                productStyles.productFieldBordered,
+                commonStyles.viewBordered,
                 styles.productBordered
               ]}
                 onLongPress={() => goToDetail(product.id)} >
@@ -173,7 +174,7 @@ export default function App() {
                 <TouchableOpacity
                   style={[
                     styles.productBtn,
-                    productStyles.productFieldBordered,
+                    commonStyles.viewBordered,
                     styles.productBordered
                   ]}
                   onPress={() => removeProduct(product.id)}>
@@ -193,7 +194,7 @@ export default function App() {
               styles.productInput,
               productStyles.productField,
               commonStyles.flexFill,
-              productStyles.productFieldBordered,
+              commonStyles.viewBordered,
               productStyles.productFieldBorderedDefault
             ]}
             maxLength={60}
@@ -207,7 +208,7 @@ export default function App() {
               styles.productQtd,
               styles.productInput,
               productStyles.productField,
-              productStyles.productFieldBordered,
+              commonStyles.viewBordered,
               productStyles.productFieldBorderedDefault
             ]}
             keyboardType="number-pad"
@@ -221,7 +222,7 @@ export default function App() {
               styles.productValue,
               styles.productInput,
               productStyles.productField,
-              productStyles.productFieldBordered,
+              commonStyles.viewBordered,
               productStyles.productFieldBorderedDefault,
               commonStyles.textRight
             ]}
@@ -233,7 +234,7 @@ export default function App() {
           <TouchableOpacity
             style={[
               styles.productBtn,
-              productStyles.productFieldBordered,
+              commonStyles.viewBordered,
               productStyles.productFieldBorderedDefault
             ]}
             onPress={() => addProduct()}>

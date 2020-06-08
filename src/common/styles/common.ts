@@ -47,10 +47,21 @@ export default StyleSheet.create<ICommonStyles>({
   flexFill: {
     flex: 1
   },
+  viewBordered: {
+    borderWidth: 1,
+    borderStyle: "solid"
+  },
+  textBordered: {
+    borderWidth: 1,
+    borderStyle: "solid"
+  },
   textCenter: {
     textAlign: 'center'
   },
   textRight: {
     textAlign: 'right'
+  },
+  textWhite: {
+    color: 'white'
   }
 });

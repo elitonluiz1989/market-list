@@ -9,10 +9,6 @@ export default StyleSheet.create<ICommonProductStyles>({
     borderRadius: 5,
     fontSize: 28
   },
-  productFieldBordered: {
-    borderWidth: 1,
-    borderStyle: 'solid'
-  },
   productFieldBorderedDefault: {
     borderColor: colors.gray.dark
   },

@@ -12,6 +12,9 @@ export default interface IHomeStyles {
   flexColumn: ViewStyle,
   flexSpaceAround: ViewStyle,
   flexFill: ViewStyle,
+  viewBordered: ViewStyle,
+  textBordered: TextStyle,
   textCenter: TextStyle,
-  textRight: TextStyle
+  textRight: TextStyle,
+  textWhite: TextStyle
 }
