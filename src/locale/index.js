@@ -16,6 +16,7 @@ i18n.fallbacks = true;
 // When a value is missing from a language and fallback doesn't work, it'll present the last word for the past key.
 i18n.missingTranslation = key => {
   const values = key.split('.');
+  const value = values[values.length - 1];
 
-  return values[values.length - 1];
+  return value.replace('_', ' ');
 };
