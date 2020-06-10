@@ -9,9 +9,6 @@ export default StyleSheet.create<ICommonProductStyles>({
     borderRadius: 5,
     fontSize: 28
   },
-  productFieldBorderedDefault: {
-    borderColor: colors.gray.dark
-  },
   productFieldGroup: {
     flexGrow: 1,
     flexDirection: 'row'

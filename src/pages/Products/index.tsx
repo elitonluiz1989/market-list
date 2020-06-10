@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, FlatList, TouchableOpacity, TextInput, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
@@ -7,13 +7,15 @@ import { t } from 'i18n-js';
 
 import IProduct from 'App/common/interfaces/IProduct';
 import commonStyles from 'App/common/styles/common';
+import AppGlobalContext from 'App/contexts/AppGlobalContext';
 import HeaderApp from 'App/components/HeaderApp';
 
 import productStyles from 'App/common/styles/product';
 import styles from './styles';
+import IAppGlobalContext from 'App/common/interfaces/IAppGlobalContext';
 
 export default function App() {
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const { products, setProducts } = useContext<IAppGlobalContext | undefined>(AppGlobalContext);
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
@@ -150,37 +152,39 @@ export default function App() {
             keyExtractor={product => product.id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item: product }) => (
-              <TouchableWithoutFeedback style={[
-                styles.product,
-                commonStyles.viewBordered,
-                styles.productBordered
-              ]}
-                onLongPress={() => goToDetail(product.id)} >
-                <View style={productStyles.productFieldGroup}>
-                  <Text style={[
-                    productStyles.productField,
-                    commonStyles.flexFill,
-                    commonStyles.textCenter
-                  ]}>{product.name}</Text>
+              <View>
+                <TouchableWithoutFeedback style={[
+                  styles.product,
+                  commonStyles.viewBordered,
+                  styles.productBordered
+                ]}
+                  onLongPress={() => goToDetail(product.id)} >
+                  <View style={productStyles.productFieldGroup}>
+                    <Text style={[
+                      productStyles.productField,
+                      commonStyles.flexFill,
+                      commonStyles.textCenter
+                    ]}>{product.name}</Text>
 
-                  <Text style={[
-                    productStyles.productField,
-                    styles.productFieldSeparator,
-                    commonStyles.flexFill,
-                    commonStyles.textCenter
-                  ]}>{formatCurrency(product.total)}</Text>
-                </View>
+                    <Text style={[
+                      productStyles.productField,
+                      styles.productFieldSeparator,
+                      commonStyles.flexFill,
+                      commonStyles.textCenter
+                    ]}>{formatCurrency(product.total)}</Text>
+                  </View>
 
-                <TouchableOpacity
-                  style={[
-                    styles.productBtn,
-                    commonStyles.viewBordered,
-                    styles.productBordered
-                  ]}
-                  onPress={() => removeProduct(product.id)}>
-                  <FontAwesome5 name="minus" size={28} color="#444" />
-                </TouchableOpacity>
-              </TouchableWithoutFeedback>
+                  <TouchableOpacity
+                    style={[
+                      styles.productBtn,
+                      commonStyles.viewBordered,
+                      styles.productBordered
+                    ]}
+                    onPress={() => removeProduct(product.id)}>
+                    <FontAwesome5 name="minus" size={28} color="#444" />
+                  </TouchableOpacity>
+                </TouchableWithoutFeedback>
+              </View>
             )}
           />
         </View>
@@ -195,7 +199,7 @@ export default function App() {
               productStyles.productField,
               commonStyles.flexFill,
               commonStyles.viewBordered,
-              productStyles.productFieldBorderedDefault
+              styles.productBordered
             ]}
             maxLength={60}
             placeholder={t('product.product')}
@@ -209,7 +213,7 @@ export default function App() {
               styles.productInput,
               productStyles.productField,
               commonStyles.viewBordered,
-              productStyles.productFieldBorderedDefault
+              styles.productBordered
             ]}
             keyboardType="number-pad"
             maxLength={3}
@@ -223,7 +227,7 @@ export default function App() {
               styles.productInput,
               productStyles.productField,
               commonStyles.viewBordered,
-              productStyles.productFieldBorderedDefault,
+              styles.productBordered,
               commonStyles.textRight
             ]}
             keyboardType="number-pad"
@@ -235,7 +239,7 @@ export default function App() {
             style={[
               styles.productBtn,
               commonStyles.viewBordered,
-              productStyles.productFieldBorderedDefault
+              styles.productBordered
             ]}
             onPress={() => addProduct()}>
             <FontAwesome5 name="plus" size={28} color="#444" />

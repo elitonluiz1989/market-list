@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { t } from 'i18n-js';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import Currency from 'App/common/helpers/Currency';
 import * as Utils from 'App/common/helpers';
+import IAppGlobalContext from 'App/common/interfaces/IAppGlobalContext';
+import AppGlobalContext from 'App/contexts/AppGlobalContext';
 
 import HeaderApp from 'App/components/HeaderApp';
 
@@ -15,17 +17,17 @@ import commonStyles from 'App/common/styles/common';
 import styles from './styles';
 
 export default function App() {
+  const { products, setProducts } = useContext<IAppGlobalContext | undefined>(AppGlobalContext);
   const [product, setProduct] = useState<IProduct>({
-    id: 1,
-    name: 'Product 001',
-    quantity: 1,
-    value: 1,
-    total: 1
+    id: 0,
+    name: '',
+    quantity: 0,
+    value: 0,
+    total: 0
   });
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
-  const [total, setTotal] = useState<number>(0);
 
   const handleCurrency = (value: string): void => {
     let currency = Currency.input(value);
@@ -33,27 +35,56 @@ export default function App() {
     setPrice(currency);
   }
 
-  let navigator = useNavigation()
+  const navigator = useNavigation();
   const navigateTo: Function = (route: string, params: any): void => {
     navigator.navigate(route, { params });
   };
 
+  const route = useRoute();
+  const productId = route.params?.productId;
+
   const goBack: Function = (product: IProduct): void => navigateTo('Products');
 
-  const save: Function = (): void => console.log("sss");
+  const getTotal = (): string => Currency.format(Number(price) * qtd);
+
+  const save: Function = (): void => {
+    // Validations
+    if (product.id === 0) {
+      return;
+    } else if (Utils.isNullOrEmpty(name) || Utils.isNullOrEmpty(price)) {
+      return;
+    } else if (qtd <= 0) {
+      return
+    }
+
+    const value = Number(price);
+    const productUpdated: IProduct = {
+      id: product.id,
+      name: name,
+      quantity: qtd,
+      value: value,
+      total: 0
+    }
+    productUpdated.total = productUpdated.value * productUpdated.quantity;
+
+    const productsUpdated = products.filter(p => p.id !== product.id);
+
+    const productList: IProduct[] = [
+      productUpdated,
+      ...productsUpdated
+    ];
+
+    setProducts(productList);
+
+    goBack();
+  }
 
   // Product's actions
   useEffect(() => {
-    let product: IProduct = {
-      id: 1,
-      name: 'Product 001',
-      quantity: 999,
-      value: 1530.90,
-      total: 1530.85
-    }
+    const product: IProduct = products.find(p => p.id === productId);
 
     setName(product.name);
-    setQtd(product.value);
+    setQtd(product.quantity);
     setPrice(product.value.toString());
 
     setProduct(product);
@@ -139,7 +170,7 @@ export default function App() {
               styles.productTotal,
               styles.productField,
               commonStyles.textBordered
-            ]}>{Currency.format(total)}</Text>
+            ]}>{getTotal()}</Text>
           </View>
         </View>
 
