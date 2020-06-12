@@ -2,6 +2,7 @@
   "expo": {
     "name": "Markert list",
     "slug": "market-list",
+    "description": "Simple market list application to easily calculate the total purchase amount",
     "platforms": [
       "ios",
       "android",
@@ -13,7 +14,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#019984"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,6 +24,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.elitonluiz1989.marketlist",
+      "versionCode": 1
     }
   }
 }

@@ -6,21 +6,18 @@ module.exports = function (api) {
       [
         'babel-plugin-root-import',
         {
-          rootPathPrefix: 'App',
-          rootPathSuffix: 'src'
+          "paths": [
+            {
+              rootPathPrefix: 'App',
+              rootPathSuffix: './src'
+            },
+            {
+              rootPathPrefix: 'Assets',
+              rootPathSuffix: './assets'
+            },
+          ]
         }
       ]
-    ],
-    env: {
-      production: {
-        plugins: [
-          'babel-plugin-root-import',
-          {
-            rootPathPrefix: 'App',
-            rootPathSuffix: 'src'
-          }
-        ]
-      }
-    }
+    ]
   };
 };

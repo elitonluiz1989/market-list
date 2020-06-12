@@ -10,7 +10,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "App/*": ["src/*"]
+      "App/*": ["src/*"],
+      "Assets/*": ["assets/*"]
     }
   }
 }
