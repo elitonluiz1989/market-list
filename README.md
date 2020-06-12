@@ -1,6 +1,4 @@
-#Market List
-
----
+# Market List
 
 Simple market list app.
 
