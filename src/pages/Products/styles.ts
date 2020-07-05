@@ -4,14 +4,22 @@ import commonStyles from 'App/common/styles/common';
 import colors from 'App/common/styles/colors';
 
 export default StyleSheet.create<IProductsStyles>({
-  totalBar: {
-    ...commonStyles.flexRow,
-    ...commonStyles.flexSpaceAround,
-    paddingTop: 10,
-    paddingBottom: 10,
+  btn: {
+    ...commonStyles.btn,
+    ...commonStyles.viewBordered,
+    borderRadius: 10
+  },
+  barBordered: {
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: colors.pallete.first
+  },
+  totalBar: {
+    ...commonStyles.flexRow,
+    ...commonStyles.flexSpaceAround,
+    ...commonStyles.section,
+    paddingTop: 10,
+    paddingBottom: 10
   },
   totalBarLabel: {
     paddingRight: 15,
@@ -28,6 +36,31 @@ export default StyleSheet.create<IProductsStyles>({
   },
   totalBarText: {
     fontSize: 30
+  },
+  listsBar: {
+    ...commonStyles.flexRow,
+    alignItems: 'center',
+    ...commonStyles.section,
+    paddingVertical: 5,
+    backgroundColor: colors.pallete.third
+  },
+  listsBarPickerWrap: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginRight: 10
+  },
+  listsBarPicker: {
+    height: 50,
+    width: 180
+  },
+  listsBarBtn: {
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+    backgroundColor: 'white',
+    borderColor: 'transparent'
+  },
+  listsBarBtnText: {
+    fontSize: 20
   },
   products: {
     flex: 1,
@@ -61,11 +94,8 @@ export default StyleSheet.create<IProductsStyles>({
     width: 80
   },
   productBtn: {
-    alignItems: 'center',
-    justifyContent: 'center',
     width: 50,
-    backgroundColor: 'white',
-    borderRadius: 10
+    backgroundColor: 'white'
   },
   productBtnBar: {
     ...commonStyles.flexRow,

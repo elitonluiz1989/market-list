@@ -1,21 +1,35 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, FlatList, TouchableOpacity, TextInput, Image } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, TextInput, Modal, Alert, AsyncStorage } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Picker } from '@react-native-community/picker';
 import { t } from 'i18n-js';
 
-import IProduct from 'App/common/interfaces/IProduct';
-import commonStyles from 'App/common/styles/common';
 import AppGlobalContext from 'App/contexts/AppGlobalContext';
-import HeaderApp from 'App/components/HeaderApp';
 
+import IAppGlobalContext from 'App/common/interfaces/IAppGlobalContext';
+import ISavedList from 'App/common/interfaces/ISavedList';
+import IProduct from 'App/common/interfaces/IProduct';
+
+import * as Utils from 'App/common/helpers';
+import Currency from 'App/common/helpers/Currency';
+import Storage from 'App/common/helpers/Storage';
+
+import AppButton from 'App/components/AppButton';
+import AppHeader from 'App/components/AppHeader';
+
+import commonStyles from 'App/common/styles/common';
 import productStyles from 'App/common/styles/product';
 import styles from './styles';
-import IAppGlobalContext from 'App/common/interfaces/IAppGlobalContext';
+import AppModal from 'App/components/AppModal';
 
 export default function App() {
   const { products, setProducts } = useContext<IAppGlobalContext | undefined>(AppGlobalContext);
+  const [savedLists, setSavedLists] = useState<ISavedList[]>([]);
+  const [selectedList, setSelectedList] = useState<number>(0);
+  const [savingListName, setSavingListName] = useState<string>('');
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
@@ -24,6 +38,86 @@ export default function App() {
   const navidator = useNavigation();
 
   const goToDetail: Function = (productId: number): void => navidator.navigate('Product', { productId });
+
+  // Saved lists
+  useEffect(() => {
+    const loadSavedLists = async () => {
+      const data = await Storage.getJson('saved_lists');
+      const savedLists = Utils.castList<ISavedList>(data);
+
+      setSavedLists(savedLists);
+    };
+
+    loadSavedLists();
+  }, []);
+
+  const getSelectedList = (): ISavedList | undefined => savedLists.find(l => l.id === selectedList);
+
+  const loadList = (): void => {
+    if (selectedList > 0) {
+      const savedList = getSelectedList();
+
+      setProducts(savedList?.items);
+    }
+  };
+
+  const showSaveListModal = (): void => {
+    if (products.length > 0) {
+      if (selectedList > 0) {
+        const selectedListContent = getSelectedList();
+
+        setSavingListName(selectedListContent?.name || '');
+      }
+
+      setShowModal(true);
+    }
+  }
+
+  const storeLists = async (lists: ISavedList[]) => {
+    try {
+      await Storage.setJson('saved_lists', lists);
+    } catch (ex) {
+      Alert.alert(t('an error occur on save the list'));
+    }
+  }
+
+  const saveList = async () => {
+    if (!Utils.isNullOrEmpty(savingListName)) {
+      const newList: ISavedList = {
+        id: Utils.getNextListId(savedLists),
+        name: savingListName,
+        items: products.map((product: IProduct, p: number): IProduct => {
+          return {
+            id: product.id,
+            name: product.name,
+            quantity: 1,
+            value: 0,
+            total: 0
+          };
+        })
+      }
+
+      let lists = savedLists;
+      const isReplacing = savedLists.find(l => l.name === savingListName);
+
+      if (!Utils.isNullOrUndefined(isReplacing)) {
+        lists = lists.filter(l => l.id !== isReplacing?.id)
+      }
+
+      const updatelists = [
+        ...lists,
+        newList
+      ];
+
+      await storeLists(updatelists);
+
+      setSavedLists(updatelists);
+      setSelectedList(newList.id);
+      setShowModal(false);
+
+      Alert.alert("List is saved");
+    }
+  }
 
   // Product's actions
   useEffect(() => {
@@ -77,35 +171,10 @@ export default function App() {
     setProducts(productList);
   }
 
-  // Helpers
-  const setNumberToTextInput: Function = (value: number, defaultValue: string = ''): string => {
-    return value > 0 ? value.toString() : defaultValue;
-  }
-
   const handleCurrency: Function = (amount: string): void => {
-    let sanitizedAmount = amount.replace(/\.|,/g, '');
+    let currency = Currency.input(amount);
 
-    if (Number(sanitizedAmount) > 0) {
-      let newAmount = sanitizedAmount;
-      let length = sanitizedAmount.length;
-
-      if (length === 1) {
-        newAmount = '0.0' + sanitizedAmount;
-      } else if (length === 2) {
-        newAmount = '0.' + sanitizedAmount
-      } else if (length >= 3) {
-        let breakPos: number = sanitizedAmount.length - 2;
-        newAmount = sanitizedAmount.substr(0, breakPos) + '.' +
-          sanitizedAmount.substr(breakPos, length);
-      }
-      setPrice(Number(newAmount).toFixed(2));
-    } else {
-      setPrice('');
-    }
-  }
-
-  const formatCurrency: Function = (amount: number): string | void => {
-    return amount.toFixed(2);
+    setPrice(currency);
   }
 
   const getNextProductId: Function = (): number => {
@@ -122,15 +191,38 @@ export default function App() {
 
   return (
     <View style={[commonStyles.page, commonStyles.container]}>
-      <HeaderApp />
+      <AppHeader />
 
       <View style={[
         commonStyles.container,
         commonStyles.main
       ]}>
+        <AppModal
+          animation="slide"
+          transparent={true}
+          title="save the list"
+          visible={showModal}
+          actions={{
+            close: {
+              action: (show: boolean): void => setShowModal(show)
+            },
+            submit: {
+              title: 'save',
+              action: saveList
+            }
+          }}>
+          <View style={[commonStyles.flexRow]}>
+            <Text>{t('name')}: </Text>
+
+            <TextInput
+              value={savingListName}
+              onChangeText={value => setSavingListName(value)} />
+          </View>
+        </AppModal>
+
         <View style={[
           styles.totalBar,
-          commonStyles.section
+          styles.barBordered
         ]}>
           <Text style={[
             styles.totalBarLabel,
@@ -141,8 +233,53 @@ export default function App() {
             styles.totalBarValue,
             styles.totalBarText,
             commonStyles.textBordered,
-          ]}>{formatCurrency(total)}</Text>
+          ]}>{Currency.format(total)}</Text>
         </View>
+
+        <View style={[
+          styles.listsBar,
+          styles.barBordered
+        ]}>
+          <View style={[
+            commonStyles.flexRow,
+            commonStyles.flexFill
+          ]}>
+            <View
+              style={styles.listsBarPickerWrap}>
+              <Picker
+                style={styles.listsBarPicker}
+                selectedValue={selectedList}
+                accessibilityLabel="saved lists"
+                onValueChange={(value, key) => setSelectedList(Number(value))}>
+                <Picker.Item label={t('saved_lists')} value="0" />
+                {savedLists.map((item: ISavedList, key: number) => (
+                  <Picker.Item label={item.name} value={item.id} key={key} />
+                ))}
+              </Picker>
+            </View>
+
+            <AppButton
+              styles={[
+                styles.listsBarBtn,
+                styles.btn
+              ]}
+              action={() => loadList()}>
+              <Text style={styles.listsBarBtnText}> {t('load')}</Text>
+            </AppButton>
+          </View>
+
+          {products.length > 0 ? (
+            <AppButton
+              styles={[
+                styles.listsBarBtn,
+                styles.btn
+              ]}
+              action={() => showSaveListModal()}>
+              <Text style={styles.listsBarBtnText}>{t('save')}</Text>
+            </AppButton>
+          ) : <Text></Text>}
+        </View>
+
         <View style={[
           styles.products,
           commonStyles.section
@@ -171,13 +308,13 @@ export default function App() {
                       styles.productFieldSeparator,
                       commonStyles.flexFill,
                       commonStyles.textCenter
-                    ]}>{formatCurrency(product.total)}</Text>
+                    ]}>{Currency.format(product.total)}</Text>
                   </View>
 
                   <TouchableOpacity
                     style={[
                       styles.productBtn,
-                      commonStyles.viewBordered,
+                      styles.btn,
                       styles.productBordered
                     ]}
                     onPress={() => removeProduct(product.id)}>
@@ -218,7 +355,7 @@ export default function App() {
             keyboardType="number-pad"
             maxLength={3}
             placeholder="1"
-            value={setNumberToTextInput(qtd)}
+            value={Utils.numericInputValue(qtd)}
             onChangeText={value => setQtd(Number(value))} />
 
           <TextInput
@@ -238,15 +375,14 @@ export default function App() {
           <TouchableOpacity
             style={[
               styles.productBtn,
-              commonStyles.viewBordered,
+              styles.btn,
               styles.productBordered
             ]}
             onPress={() => addProduct()}>
             <FontAwesome5 name="plus" size={28} color="#444" />
           </TouchableOpacity>
-
         </View>
-      </View>
-    </View>
+      </View >
+    </View >
   );
 }

@@ -5,7 +5,7 @@ import { t } from 'i18n-js';
 import commonStyles from 'App/common/styles/common';
 import LogoImg from 'Assets/icon.png';
 
-export default function App() {
+export default function AppHeader() {
 
   return (
     <View style={commonStyles.header}>

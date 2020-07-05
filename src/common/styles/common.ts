@@ -44,8 +44,62 @@ export default StyleSheet.create<ICommonStyles>({
   flexSpaceAround: {
     justifyContent: 'space-around'
   },
+  flexSpaceBetween: {
+    justifyContent: 'space-between'
+  },
   flexFill: {
     flex: 1
+  },
+  modal: {
+    backgroundColor: 'rgba(0, 0, 0, .5)'
+  },
+  modalBlock: {
+    paddingHorizontal: 35,
+    paddingVertical: 20
+  },
+  modalBox: {  
+    alignItems: "center",
+    elevation: 5,
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84
+  },
+  modalHeader: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: colors.gray.light
+  },
+  modalHeaderText: {
+    fontSize: 26,
+    textAlign: 'center'
+  },
+  modalContent: {
+    marginVertical: 40
+  },
+  modalFooter: {
+    width: '100%'
+  },
+  btn: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  btnDefault: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '40%',
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.gray.light,
+    borderRadius: 10
   },
   viewBordered: {
     borderWidth: 1,

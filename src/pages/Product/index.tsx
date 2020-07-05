@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import Currency from 'App/common/helpers/Currency';
 import * as Utils from 'App/common/helpers';
 import IAppGlobalContext from 'App/common/interfaces/IAppGlobalContext';
-import AppGlobalContext from 'App/contexts/AppGlobalContext';
-
-import HeaderApp from 'App/components/HeaderApp';
-
 import IProduct from 'App/common/interfaces/IProduct';
-
+import AppGlobalContext from 'App/contexts/AppGlobalContext';
+import AppHeader from 'App/components/AppHeader';
 import commonStyles from 'App/common/styles/common';
 import styles from './styles';
 
@@ -92,7 +88,7 @@ export default function App() {
 
   return (
     <View style={[commonStyles.page, commonStyles.container]}>
-      <HeaderApp />
+      <AppHeader />
 
       <View style={[
         commonStyles.container,
