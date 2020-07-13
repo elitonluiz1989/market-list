@@ -63,9 +63,10 @@ export default function AppModal(props: IAppModalProps) {
               text={actions?.close?.title || "cancel"} />
 
             <AppButton
-              styles={[styles.btnDefault]}
-              action={actions?.submit?.action}
-              text={actions?.submit?.title} />
+              styles={[styles.btnDefault, styles.btnSuccess]}
+              action={actions?.submit?.action}>
+                <Text style={styles.textWhite}>{t(actions?.submit?.title || '')}</Text>
+              </AppButton>
           </View>
         </View>
       </View>

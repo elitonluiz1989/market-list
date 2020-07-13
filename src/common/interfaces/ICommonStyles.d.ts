@@ -21,6 +21,7 @@ export default interface IHomeStyles {
   modalFooter: ViewStyle,
   btn: ViewStyle,
   btnDefault: ViewStyle,
+  btnSuccess: ViewStyle,
   flexFill: ViewStyle,
   viewBordered: ViewStyle,
   textBordered: TextStyle,

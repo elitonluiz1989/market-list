@@ -62,6 +62,23 @@ export default StyleSheet.create<IProductsStyles>({
   listsBarBtnText: {
     fontSize: 20
   },
+  listsModal: {
+    ...commonStyles.flexRow,
+    alignItems: 'center',
+    width: '100%'
+  },
+  listsModalText: {
+    fontSize: 20
+  },
+  listsModalInput: {
+    ...commonStyles.flexFill,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.gray.light,
+    borderRadius: 5
+  },
   products: {
     flex: 1,
     paddingBottom: 7

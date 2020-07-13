@@ -1,6 +1,6 @@
 export default {
   gray: {
-    light: '#888',
+    light: '#ccc',
     normal: '#444',
     dark: '#222'
   },

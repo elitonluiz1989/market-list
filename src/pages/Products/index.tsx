@@ -8,6 +8,7 @@ import { t } from 'i18n-js';
 
 import AppGlobalContext from 'App/contexts/AppGlobalContext';
 
+import { IAppModalActions } from 'App/common/interfaces/AppInterfaces';
 import IAppGlobalContext from 'App/common/interfaces/IAppGlobalContext';
 import ISavedList from 'App/common/interfaces/ISavedList';
 import IProduct from 'App/common/interfaces/IProduct';
@@ -30,6 +31,14 @@ export default function App() {
   const [selectedList, setSelectedList] = useState<number>(0);
   const [savingListName, setSavingListName] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [modalActions, setModalActions] = useState<IAppModalActions>({
+    close: {
+      title: 'cancel',
+      action: (show: boolean): void => setShowModal(show)
+    }
+  });
+  const [modalInputEnabled, setModalInputEnabled] = useState<boolean>(true);
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
@@ -61,18 +70,6 @@ export default function App() {
     }
   };
 
-  const showSaveListModal = (): void => {
-    if (products.length > 0) {
-      if (selectedList > 0) {
-        const selectedListContent = getSelectedList();
-
-        setSavingListName(selectedListContent?.name || '');
-      }
-
-      setShowModal(true);
-    }
-  }
-
   const storeLists = async (lists: ISavedList[]) => {
     try {
       await Storage.setJson('saved_lists', lists);
@@ -85,16 +82,8 @@ export default function App() {
     if (!Utils.isNullOrEmpty(savingListName)) {
       const newList: ISavedList = {
         id: Utils.getNextListId(savedLists),
-        name: savingListName,
-        items: products.map((product: IProduct, p: number): IProduct => {
-          return {
-            id: product.id,
-            name: product.name,
-            quantity: 1,
-            value: 0,
-            total: 0
-          };
-        })
+        name: savingListName.trim(),
+        items: products
       }
 
       let lists = savedLists;
@@ -115,7 +104,63 @@ export default function App() {
       setSelectedList(newList.id);
       setShowModal(false);
 
-      Alert.alert("List is saved");
+      Alert.alert(t('lists.save.message'));
+    }
+  }
+  const removeList = async () => {
+    if (!Utils.isNullOrEmpty(savingListName)) {
+      const listToRemove = getSelectedList();
+      const updatedLists = savedLists.filter(l => l.id !== listToRemove?.id);
+
+      await storeLists(updatedLists);
+
+      setSavedLists(updatedLists);
+      setProducts([]);
+      setSelectedList(0);
+      setShowModal(false);
+
+      Alert.alert(t("lists.remove.message"));
+    }
+  }
+
+  const showSaveListModal = (): void => {
+    if (products.length > 0) {
+      if (selectedList > 0) {
+        const selectedListContent = getSelectedList();
+
+        setSavingListName(selectedListContent?.name || '');
+      }
+      let actions: IAppModalActions = modalActions;
+      actions.submit = {
+        title: 'save',
+        action: saveList
+      }
+
+      setModalInputEnabled(true);
+      setModalActions(actions);
+      setModalTitle(t('lists.save.title'));
+      setShowModal(true);
+    }
+  }
+
+  const showRemoveListModal = (): void => {
+    if (products.length > 0) {
+      if (selectedList > 0) {
+        const selectedListContent = getSelectedList();
+
+        setSavingListName(selectedListContent?.name || '');
+      }
+      
+      let actions: IAppModalActions = modalActions;
+      actions.submit = {
+        title: 'remove',
+        action: removeList
+      }
+
+      setModalInputEnabled(false);
+      setModalActions(actions);
+      setModalTitle(t('lists.remove.title'));
+      setShowModal(true);
     }
   }
 
@@ -200,22 +245,16 @@ export default function App() {
         <AppModal
           animation="slide"
           transparent={true}
-          title="save the list"
+          title={modalTitle}
           visible={showModal}
-          actions={{
-            close: {
-              action: (show: boolean): void => setShowModal(show)
-            },
-            submit: {
-              title: 'save',
-              action: saveList
-            }
-          }}>
-          <View style={[commonStyles.flexRow]}>
-            <Text>{t('name')}: </Text>
+          actions={modalActions}>
+          <View style={styles.listsModal}>
+            <Text style={styles.listsModalText}>{t('name')} </Text>
 
             <TextInput
+              style={[styles.listsModalInput, styles.listsModalText]}
               value={savingListName}
+              editable={modalInputEnabled}
               onChangeText={value => setSavingListName(value)} />
           </View>
         </AppModal>
@@ -266,6 +305,17 @@ export default function App() {
               action={() => loadList()}>
               <Text style={styles.listsBarBtnText}> {t('load')}</Text>
             </AppButton>
+
+            {selectedList > 0 ? (
+              <AppButton
+                styles={[
+                  styles.listsBarBtn,
+                  styles.btn
+                ]}
+                action={() => showRemoveListModal()}>
+                <Text style={styles.listsBarBtnText}>{t('del')}</Text>
+              </AppButton>
+            ) : <Text></Text>}
           </View>
 
           {products.length > 0 ? (

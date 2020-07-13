@@ -101,6 +101,11 @@ export default StyleSheet.create<ICommonStyles>({
     borderColor: colors.gray.light,
     borderRadius: 10
   },
+  btnSuccess: {
+    backgroundColor: colors.pallete.first,
+    borderColor: colors.pallete.first,
+    color: 'white'
+  },
   viewBordered: {
     borderWidth: 1,
     borderStyle: "solid"

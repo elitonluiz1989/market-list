@@ -37,5 +37,7 @@ interface IAppModalProps {
 export {
   IAppIcon,
   IAppButtonProps,
-  IAppModalProps
+  IAppModalProps,
+  IAppModalAction,
+  IAppModalActions
 }
