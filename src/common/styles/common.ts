@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import ICommonStyles from 'App/common/interfaces/ICommonStyles'
 import colors from './colors';
@@ -47,6 +47,9 @@ export default StyleSheet.create<ICommonStyles>({
   flexSpaceBetween: {
     justifyContent: 'space-between'
   },
+  flexEnd: {
+    justifyContent: 'flex-end'
+  },
   flexFill: {
     flex: 1
   },
@@ -58,18 +61,20 @@ export default StyleSheet.create<ICommonStyles>({
     paddingVertical: 20
   },
   modalBox: {  
-    alignItems: "center",
-    elevation: 5,
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84
+    shadowRadius: 3.84,
+    shadowColor: "#000"
+  },
+  modalBoxDefault: {
+    alignItems: "center",
+    elevation: 5,
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20
   },
   modalHeader: {
     width: '100%',

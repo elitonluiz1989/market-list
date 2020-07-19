@@ -8,11 +8,39 @@ import { IAppButtonProps } from 'App/common/interfaces/AppInterfaces';
 import * as Utils from 'App/common/helpers';
 
 export default function AppButton(props: IAppButtonProps) {
-  const { styles, action, icon, text, children } = props;
+  const { styles, action, icon, text, children, disabled, onLayout } = props;
   let defaultChildren = null;
+  let isDisabled = disabled || false;
 
   if (!Utils.isNullOrUndefined(icon)) {
-    defaultChildren = <FontAwesome5 name={icon?.name} size={icon?.size || 16} color={icon?.color || '#444'} />
+    let style: any;
+
+    switch (icon?.style) {
+      case 'light':
+        style = { light: true };
+        break;
+
+      case 'solid':
+        style = { solid: true };
+        break;
+
+      case 'brand':
+        style = { brand: true };
+        break;
+
+      default:
+        style = { regular: true };
+        break;
+    };
+
+    let attributes = {
+      ...style,
+      name: icon?.name,
+      size: icon?.size || 16,
+      color: icon?.color || '#444'
+    };
+
+    defaultChildren = <FontAwesome5  {...attributes} />
   }
 
   if (!Utils.isNullOrUndefined(text)) {
@@ -22,7 +50,9 @@ export default function AppButton(props: IAppButtonProps) {
   return (
     <TouchableOpacity
       style={styles}
-      onPress={action}>
+      disabled={isDisabled}
+      onPress={action}
+      onLayout={onLayout}>
       {!Utils.isNullOrUndefined(children) ? children : defaultChildren}
     </TouchableOpacity>
   );

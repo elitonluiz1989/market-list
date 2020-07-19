@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, FlatList, TouchableOpacity, TextInput, Modal, Alert, AsyncStorage } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback, TouchableHighlight } from 'react-native-gesture-handler';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-community/picker';
 import { t } from 'i18n-js';
@@ -19,17 +19,21 @@ import Storage from 'App/common/helpers/Storage';
 
 import AppButton from 'App/components/AppButton';
 import AppHeader from 'App/components/AppHeader';
+import AppModal from 'App/components/AppModal';
 
 import commonStyles from 'App/common/styles/common';
 import productStyles from 'App/common/styles/product';
+import colors from 'App/common/styles/colors';
 import styles from './styles';
-import AppModal from 'App/components/AppModal';
 
 export default function App() {
   const { products, setProducts } = useContext<IAppGlobalContext | undefined>(AppGlobalContext);
   const [savedLists, setSavedLists] = useState<ISavedList[]>([]);
   const [selectedList, setSelectedList] = useState<number>(0);
   const [savingListName, setSavingListName] = useState<string>('');
+  const [hasLoadedList, setHasLoadedList] = useState<boolean>(false);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [menuPosY, setMenuPosY] = useState<number>(68);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
   const [modalActions, setModalActions] = useState<IAppModalActions>({
@@ -38,11 +42,13 @@ export default function App() {
       action: (show: boolean): void => setShowModal(show)
     }
   });
+  const [hasModalContent, setHasModalContent] = useState<boolean>(true);
   const [modalInputEnabled, setModalInputEnabled] = useState<boolean>(true);
   const [name, setName] = useState<string>('');
   const [qtd, setQtd] = useState<number>(0);
   const [price, setPrice] = useState<string>('');
   const [total, setTotal] = useState<number>(0);
+  const [hasProducts, setHasProducts] = useState<boolean>(false);
 
   const navidator = useNavigation();
 
@@ -67,6 +73,8 @@ export default function App() {
       const savedList = getSelectedList();
 
       setProducts(savedList?.items);
+      setHasProducts(true);
+      setHasLoadedList(true);
     }
   };
 
@@ -78,6 +86,7 @@ export default function App() {
     }
   }
 
+  // Menu actions
   const saveList = async () => {
     if (!Utils.isNullOrEmpty(savingListName)) {
       const newList: ISavedList = {
@@ -104,11 +113,11 @@ export default function App() {
       setSelectedList(newList.id);
       setShowModal(false);
 
-      Alert.alert(t('lists.save.message'));
+      Alert.alert(t('menu.save.message'));
     }
   }
   const removeList = async () => {
-    if (!Utils.isNullOrEmpty(savingListName)) {
+    if (hasLoadedList && selectedList > 0) {
       const listToRemove = getSelectedList();
       const updatedLists = savedLists.filter(l => l.id !== listToRemove?.id);
 
@@ -119,9 +128,17 @@ export default function App() {
       setSelectedList(0);
       setShowModal(false);
 
-      Alert.alert(t("lists.remove.message"));
+      Alert.alert(t("menu.remove.message"));
     }
   }
+
+  const cleanProducts = (): void => {
+    setProducts([]);
+    setHasProducts(false);
+    setShowModal(false);
+
+    Alert.alert(t("menu.clean.message"));
+  };
 
   const showSaveListModal = (): void => {
     if (products.length > 0) {
@@ -138,19 +155,14 @@ export default function App() {
 
       setModalInputEnabled(true);
       setModalActions(actions);
-      setModalTitle(t('lists.save.title'));
+      setHasModalContent(true);
+      setModalTitle(t('menu.save.title'));
       setShowModal(true);
     }
   }
 
   const showRemoveListModal = (): void => {
-    if (products.length > 0) {
-      if (selectedList > 0) {
-        const selectedListContent = getSelectedList();
-
-        setSavingListName(selectedListContent?.name || '');
-      }
-      
+    if (hasLoadedList && selectedList > 0) {
       let actions: IAppModalActions = modalActions;
       actions.submit = {
         title: 'remove',
@@ -159,7 +171,26 @@ export default function App() {
 
       setModalInputEnabled(false);
       setModalActions(actions);
-      setModalTitle(t('lists.remove.title'));
+      setHasModalContent(false);
+      setModalTitle(t('menu.remove.title'));
+      setShowModal(true);
+    }
+  }
+
+  const showCleanProducts = (): void => {
+    if (hasProducts) {
+      let actions: IAppModalActions = modalActions;
+      actions.submit = {
+        title: 'remove',
+        action: cleanProducts
+      }
+
+      setSavingListName('');
+
+      setModalInputEnabled(false);
+      setModalActions(actions);
+      setHasModalContent(false);
+      setModalTitle(t('menu.clean.title'));
       setShowModal(true);
     }
   }
@@ -201,6 +232,7 @@ export default function App() {
       ];
 
       setProducts(productList);
+      setHasProducts(true);
 
       setName('');
       setQtd(0);
@@ -214,6 +246,7 @@ export default function App() {
     });
 
     setProducts(productList);
+    setHasProducts(productList.length > 0);
   }
 
   const handleCurrency: Function = (amount: string): void => {
@@ -248,20 +281,126 @@ export default function App() {
           title={modalTitle}
           visible={showModal}
           actions={modalActions}>
-          <View style={styles.listsModal}>
-            <Text style={styles.listsModalText}>{t('name')} </Text>
+          {hasModalContent &&
+            <View style={styles.listsModal}>
+              <Text style={styles.listsModalText}>{t('name')} </Text>
 
-            <TextInput
-              style={[styles.listsModalInput, styles.listsModalText]}
-              value={savingListName}
-              editable={modalInputEnabled}
-              onChangeText={value => setSavingListName(value)} />
-          </View>
+              <TextInput
+                style={[styles.listsModalInput, styles.listsModalText]}
+                value={savingListName}
+                editable={modalInputEnabled}
+                onChangeText={value => setSavingListName(value)} />
+            </View>}
         </AppModal>
 
         <View style={[
-          styles.totalBar,
-          styles.barBordered
+          styles.listsBar,
+          commonStyles.flexSpaceBetween
+        ]}>
+          <View
+            style={[
+              styles.listsBarPickerWrap,
+              styles.productBordered
+            ]}>
+            <Picker
+              style={styles.listsBarPicker}
+              selectedValue={selectedList}
+              accessibilityLabel="saved lists"
+              onValueChange={(value, key) => setSelectedList(Number(value))}>
+              <Picker.Item label={t('saved_lists')} value="0" />
+              {savedLists.map((item: ISavedList, key: number) => (
+                <Picker.Item label={item.name} value={item.id} key={key} />
+              ))}
+            </Picker>
+          </View>
+
+          <AppButton
+            styles={[
+              styles.listsBarBtn,
+              styles.btn,
+              styles.productBordered
+            ]}
+            icon={{
+              name: 'sync',
+              size: 25
+            }}
+            action={() => loadList()} />
+
+          <AppButton
+            styles={[
+              styles.listsBarBtn,
+              styles.btn,
+              styles.productBordered
+            ]}
+            icon={{
+              name: 'ellipsis-h',
+              size: 25
+            }}
+            disabled={!hasProducts && !hasLoadedList}
+            onLayout={event => {
+              const layout = event.nativeEvent.layout;
+              const posY = layout.height + layout.y + 10;
+              setMenuPosY(posY);
+            }}
+            action={() => setShowMenu(!showMenu)} />
+        </View>
+
+        {showMenu &&
+          <View
+            style={styles.listsMenuMask}>
+            <TouchableWithoutFeedback
+              style={{ height: '100%' }}
+              onPress={() => setShowMenu(false)} />
+
+            <View style={[
+              styles.listsMenu,
+              styles.productBordered,
+              { top: menuPosY }
+            ]}>
+              <View style={styles.listsMenuArrow}>
+                <FontAwesome5 name="caret-up" size={30} color={colors.pallete.first} />
+              </View>
+
+              <View
+                style={[
+                  styles.listsMenuItem,
+                  styles.listsMenuItemBordered,
+                  styles.productBordered
+                ]}>
+                <AppButton
+                  action={() => showRemoveListModal()}
+                  disabled={!hasLoadedList}>
+                  <Text style={commonStyles.textCenter}>{t('menu.remove.text')}</Text>
+                </AppButton>
+              </View>
+
+              <View
+                style={[
+                  styles.listsMenuItem,
+                  styles.listsMenuItemBordered,
+                  styles.productBordered
+                ]}>
+                <AppButton
+                  action={() => showSaveListModal()}
+                  disabled={!hasProducts}>
+                  <Text style={commonStyles.textCenter}>{t('menu.save.text')}</Text>
+                </AppButton>
+              </View>
+
+              <View
+                style={styles.listsMenuItem}>
+                <AppButton
+                  action={() => showCleanProducts()}
+                  disabled={!hasProducts}>
+                  <Text style={commonStyles.textCenter}>{t('menu.clean.text')}</Text>
+                </AppButton>
+              </View>
+            </View>
+          </View>
+        }
+
+        <View style={[
+          styles.totalBar
         ]}>
           <Text style={[
             styles.totalBarLabel,
@@ -270,64 +409,8 @@ export default function App() {
 
           <Text style={[
             styles.totalBarValue,
-            styles.totalBarText,
-            commonStyles.textBordered,
+            styles.totalBarText
           ]}>{Currency.format(total)}</Text>
-        </View>
-
-        <View style={[
-          styles.listsBar,
-          styles.barBordered
-        ]}>
-          <View style={[
-            commonStyles.flexRow,
-            commonStyles.flexFill
-          ]}>
-            <View
-              style={styles.listsBarPickerWrap}>
-              <Picker
-                style={styles.listsBarPicker}
-                selectedValue={selectedList}
-                accessibilityLabel="saved lists"
-                onValueChange={(value, key) => setSelectedList(Number(value))}>
-                <Picker.Item label={t('saved_lists')} value="0" />
-                {savedLists.map((item: ISavedList, key: number) => (
-                  <Picker.Item label={item.name} value={item.id} key={key} />
-                ))}
-              </Picker>
-            </View>
-
-            <AppButton
-              styles={[
-                styles.listsBarBtn,
-                styles.btn
-              ]}
-              action={() => loadList()}>
-              <Text style={styles.listsBarBtnText}> {t('load')}</Text>
-            </AppButton>
-
-            {selectedList > 0 ? (
-              <AppButton
-                styles={[
-                  styles.listsBarBtn,
-                  styles.btn
-                ]}
-                action={() => showRemoveListModal()}>
-                <Text style={styles.listsBarBtnText}>{t('del')}</Text>
-              </AppButton>
-            ) : <Text></Text>}
-          </View>
-
-          {products.length > 0 ? (
-            <AppButton
-              styles={[
-                styles.listsBarBtn,
-                styles.btn
-              ]}
-              action={() => showSaveListModal()}>
-              <Text style={styles.listsBarBtnText}>{t('save')}</Text>
-            </AppButton>
-          ) : <Text></Text>}
         </View>
 
         <View style={[
